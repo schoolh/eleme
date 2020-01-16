@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <VHeader></VHeader>
+    <VHeader :seller="seller"></VHeader>
     <div class="tab">
       <div class="tab-item">
         <router-link to="/goods">商品</router-link>
@@ -41,7 +41,7 @@ export default {
     this.$http.get('/seller').then((res) => {
       // window.console.log(res)
       res = res.data
-      if (res.erron === ERR_OK) {
+      if (res.errno === ERR_OK) {
         this.seller = Object.assign({}, this.seller, res.data)
       }
     })
@@ -59,10 +59,10 @@ export default {
     width: 100%;
     height: 40px;
     line-height: 40px;
+    @include border-1px(rgba(7, 17, 27, 0.1));
     .tab-item {
       flex: 1;
       text-align: center;
-      @include border-1px(rgba(7, 17, 27, 0.1));
       & > a {
         display: block;
         font-size: 14px;
