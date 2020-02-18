@@ -1,7 +1,8 @@
 <template>
   <div id="app">
-    <VHeader :seller="seller"></VHeader>
-    <div class="tab">
+    <VHeader :seller="seller"/>
+    <!-- 添加border-1px类，使1px边框样式生效，见mixin.scss中定义的边框和base.scss中将边框根据DPR缩放 -->
+    <div class="tab border-1px">
       <div class="tab-item">
         <router-link to="/goods">商品</router-link>
       </div>
@@ -12,11 +13,14 @@
         <router-link to="/seller">商家</router-link>
       </div>
     </div>
-    <router-view></router-view>
+    <keep-alive>
+      <router-view :seller="seller"></router-view>
+    </keep-alive>
   </div>
 </template>
 
 <script>
+import {urlParse} from './components/common/util'
 import VHeader from './components/header/Header.vue'
 /* 
 icon.scss只能在script标签中引入，文件中包含url，如果在style标签中引入，
@@ -34,11 +38,16 @@ export default {
   },
   data() {
     return {
-      seller: {}
+      seller: {
+        id: (() => {
+          let queryParam = urlParse()
+          return queryParam.id
+        })()
+      }
     }
   },
   created() {
-    this.$http.get('/seller').then((res) => {
+    this.$http.get('/seller?id=' + this.seller.id).then((res) => {
       // window.console.log(res)
       res = res.data
       if (res.errno === ERR_OK) {
@@ -49,7 +58,7 @@ export default {
 }
 </script>
 
-<style lang='scss' scoped>
+<style lang="scss" scoped>
 // mixin.scss只能在style标签中引入，如果在script标签中import，会报错找不到它。
 @import './assets/scss/mixin.scss';
 
